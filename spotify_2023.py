@@ -105,6 +105,7 @@ cmpntGraph2 = dcc.Graph(figure = graphData2, id = "Cmpnt-Graph-2")
 
 application = Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
 server = application.server
+server.route("/static/styles/styles.css")
 
 # Organize the layout.
 application.layout = html.Div([cmpntTitle,
