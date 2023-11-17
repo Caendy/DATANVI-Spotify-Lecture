@@ -1,9 +1,10 @@
-from dash import Dash, dcc, html
+import dash
+from dash import Dash, dcc, html, Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 
-strDataset = "https://raw.githubusercontent.com/Caendy/DATANVI-Spotify-Lecture/main/datasets/spotify-2023.csv"
+strDataset = "https://raw.githubusercontent.com/Caendy/DATANVI-Render-Draft/main/datasets/spotify-2023.csv"
 
 dfDataset = pd.read_csv(strDataset, encoding = "ISO-8859-1")
 dfDataset.head()
@@ -17,7 +18,6 @@ dfData1["released_month"] = dfData1["released_month"].replace([1, 2, 3, 4, 5, 6,
 
 # Displays the filtered dataset.
 dfData1
-
 
 # Filters the dataset to get the number of songs per [released_year] and [released_month].
 dfData2 = dfDataset[["released_year", "released_month"]]
@@ -35,6 +35,9 @@ dfData2 = dfData2.pivot(index = "released_year", columns = "released_month", val
 
 # Displays the filtered dataset.
 dfData2
+
+application = Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
+server = application.server
 
 # Provided content. Do NOT alter.
 cmpntTitle = html.H1(children = "SPOTIFY 2023", id = "Title")
@@ -75,7 +78,9 @@ cmpntGraph1 = dcc.Graph(figure = graphData1, id = "Cmpnt-Graph-1")
 heatmapColors = [(0, "#FFFFFF"), (1, "#1DB954")]
 
 # Creates a [Heatmap] for [dfData2].
-graphData2 = px.imshow(img = dfData2, color_continuous_scale = heatmapColors, aspect = "auto")
+graphData2 = px.imshow(img = dfData2,
+                       color_continuous_scale = heatmapColors,
+                       aspect = "auto")
 
 # [TODO] : Add parameters to the [px.imshow()] line ABOVE, such that it sets the Heatmap colors with the
 #          provided [heatmapColors] variable, AND it sets the aspect ratio of the Heatmap to automatically
@@ -99,13 +104,11 @@ cmpntGraph2 = dcc.Graph(figure = graphData2, id = "Cmpnt-Graph-2")
 # '''''''''''''''''''''''''''''''''''
 
 # [TODO] : Prepare your personal graph here. Do NOT forget to add it to the application layout.
-#          Note that your personal graph should NEITHER be a [Bar Graph] nor a [Heatmap]. You
-#          may refer to various basic Plotly graphs via the link below.
-#          (REFERENCE : https://plotly.com/python/basic-charts/)
 
-application = Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
+application = dash.Dash(__name__, external_stylesheets = [dbc.themes.BOOTSTRAP])
 server = application.server
 server.route("/static/styles/styles.css")
+
 
 # Organize the layout.
 application.layout = html.Div([cmpntTitle,
@@ -115,4 +118,5 @@ application.layout = html.Div([cmpntTitle,
 
 # Run the application.
 if __name__ == "__main__":
-  application.run_server(debug = True)
+    application.run_server(debug=True)
+    
